@@ -18,6 +18,10 @@ func Set(p Policy) func(http.Handler) http.Handler {
 				w.Header().Add(KeyVary, KeyRequestMethods)
 				w.Header().Add(KeyVary, KeyRequestHeaders)
 
+				for _, f := range p.Vary {
+					w.Header().Add(KeyVary, f)
+				}
+
 				// validate origin
 				origin := r.Header.Get(KeyOrigin)
 				if origin == "" {

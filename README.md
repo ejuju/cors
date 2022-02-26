@@ -2,7 +2,7 @@
 
 ---
 
-This CORS implementation simply responds to the browser with the right headers, but it does not prevent request from unallowed requests from being handled.
+This CORS implementation simply responds to the browser with the right headers, but it does not prevent unallowed requests from being handled.
 
 ---
 

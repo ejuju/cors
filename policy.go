@@ -16,7 +16,7 @@ package cors
 //
 type Policy struct {
 	// AllowOrigin      string   // can be either an origin (with the scheme, for ex: "https://example.com") or an asterisk ("*")
-	AllowOrigin      func(string) string //
+	AllowOrigin      func(string) string // takes the request origin and returns the either "*" or the sender's origin if they should be allowed to access the request
 	AllowMethods     []string            // for ex: "GET", "POST", "DELETE", "PUT" (allowed by default: "OPTIONS")
 	AllowHeaders     []string            // for ex: "Origin, X-Custom-Header, Authorization" (allowed by default: "Cache-Control", "Content-Language", "Content-Length", "Content-Type", "Expires", "Last-Modified", "Pragma")
 	ExposeHeaders    []string            // for ex: "Content-Encoding, Authorization"

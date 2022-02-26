@@ -14,7 +14,6 @@ func Set(p Policy) func(http.Handler) http.Handler {
 
 			// check if request is preflight request
 			if IsPreflightRequest(r) {
-
 				// set default headers (vary headers should be set for caching, see: https://github.com/rs/cors/issues/10, https://github.com/fastify/fastify-cors/pull/45, https://textslashplain.com/2018/08/02/cors-and-vary/)
 				w.Header().Add(KeyVary, KeyRequestMethods)
 				w.Header().Add(KeyVary, KeyRequestHeaders)
@@ -53,14 +52,11 @@ func Set(p Policy) func(http.Handler) http.Handler {
 				w.Header().Set(KeyAllowOrigin, allowedOrigin)
 
 				// todo: https://github.com/rs/cors/blob/master/cors.go (line 317)
-
+				w.WriteHeader(http.StatusOK)
 				return
 			}
 
 			// not a preflight request
-
-			// todo: see how its done https://github.com/rs/cors/blob/master/cors.go
-
 			next.ServeHTTP(w, r)
 		})
 	}

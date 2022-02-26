@@ -2,12 +2,17 @@
 
 ---
 
-Features
+## Features
 
 - CORS middleware for Gorilla Mux
 - Easy configuration (using Policy struct)
 
 ---
+
+## Roadmap
+
+- Access-Control-Request-Private-Network
+- ***
 
 ## Notes
 

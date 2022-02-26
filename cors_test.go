@@ -22,9 +22,8 @@ func TestSet(t *testing.T) {
 
 	// register cors middleware
 	router.Use(Set(Policy{
-		AllowOrigin: func(r *http.Request) bool {
-			origin := r.Header.Get(KeyOrigin)
-			return origin == "https://example.com"
+		AllowOrigin: func(origin string) string {
+			return origin // allow all origins
 		},
 		AllowMethods:     []string{"GET"},
 		AllowHeaders:     []string{"Origin", "X-Test", "Accept", "Accept-Language", "Content-Language"},

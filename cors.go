@@ -12,7 +12,7 @@ func Set(p Policy) func(http.Handler) http.Handler {
 			w.Header().Add(KeyAllowHeaders, KeyOrigin) // always allow origin in request header
 			w.Header().Add(KeyVary, KeyOrigin)         // always set origin in Vary header to prevent cache poisoning https://github.com/rs/cors/issues/10
 
-			// check if request if preflight request
+			// check if request is preflight request
 			if IsPreflightRequest(r) {
 
 				// set default headers (vary headers should be set for caching, see: https://github.com/rs/cors/issues/10, https://github.com/fastify/fastify-cors/pull/45, https://textslashplain.com/2018/08/02/cors-and-vary/)
@@ -52,10 +52,15 @@ func Set(p Policy) func(http.Handler) http.Handler {
 				// set response headers
 				w.Header().Set(KeyAllowOrigin, allowedOrigin)
 
-				// STOPPED HERE
+				// todo: https://github.com/rs/cors/blob/master/cors.go (line 317)
+
+				return
 			}
 
-			//
+			// not a preflight request
+
+			// todo: see how its done https://github.com/rs/cors/blob/master/cors.go
+
 			next.ServeHTTP(w, r)
 		})
 	}
@@ -79,13 +84,20 @@ func methodIsAllowed(method string, allowedMethods []string) bool {
 
 //
 func headersAreAllowed(headers string, allowedHeaders []string) bool {
-	included := false
 	fields := strings.Split(headers, ",")
+	for _, f := range fields {
+		if !headerIsAllowed(f, allowedHeaders) {
+			return false
+		}
+	}
+	return true
+}
+
+func headerIsAllowed(header string, allowedHeaders []string) bool {
+	included := false
 	for _, h := range allowedHeaders {
-		for _, f := range fields {
-			if h == f {
-				included = true
-			}
+		if header == h {
+			included = true
 		}
 	}
 	return included

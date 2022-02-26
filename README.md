@@ -2,6 +2,10 @@
 
 ---
 
+This CORS implementation simply responds to the browser with the right headers, but it does not prevent request from unallowed requests from being handled.
+
+---
+
 ## Features
 
 - CORS middleware for Gorilla Mux
@@ -12,7 +16,6 @@
 ## Roadmap
 
 - Access-Control-Request-Private-Network
-- ***
 
 ## Notes
 

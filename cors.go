@@ -1,6 +1,7 @@
 package cors
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -14,6 +15,7 @@ func Set(p Policy) func(http.Handler) http.Handler {
 
 			// check if request is preflight request
 			if IsPreflightRequest(r) {
+				fmt.Printf("PREFLIGHT: %+v\n", r)
 				// set default headers (vary headers should be set for caching, see: https://github.com/rs/cors/issues/10, https://github.com/fastify/fastify-cors/pull/45, https://textslashplain.com/2018/08/02/cors-and-vary/)
 				w.Header().Add(KeyVary, KeyRequestMethods)
 				w.Header().Add(KeyVary, KeyRequestHeaders)
@@ -68,7 +70,7 @@ func Set(p Policy) func(http.Handler) http.Handler {
 
 // IsPreflightRequest returns true if the request is a preflight request
 func IsPreflightRequest(r *http.Request) bool {
-	return r.Method == http.MethodOptions && r.Header.Get("Access-Control-Request-Method") != ""
+	return r.Method == http.MethodOptions && r.Header.Get(KeyRequestMethods) != ""
 }
 
 //

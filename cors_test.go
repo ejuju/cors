@@ -1,10 +1,9 @@
 package cors
 
 import (
-	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -23,7 +22,7 @@ func TestSet(t *testing.T) {
 	// register cors middleware
 	router.Use(Set(Policy{
 		AllowOrigin: func(origin string) string {
-			return origin // allow all origins
+			return "otherorigin.com" // allow all origins
 		},
 		AllowMethods:     []string{"GET"},
 		AllowHeaders:     []string{"Origin", "X-Test", "Accept", "Accept-Language", "Content-Language"},
@@ -32,17 +31,29 @@ func TestSet(t *testing.T) {
 		CacheMaxAge:      120,
 	}))
 
-	// send test request
-	req := httptest.NewRequest(http.MethodDelete, "http://localhost:8080/", nil)
-	req.Header.Set("Origin", "http://example.com/page1")
+	// send preflight request
+	req := httptest.NewRequest(http.MethodOptions, "http://localhost:8080/", nil)
+	req.Header.Set(KeyOrigin, "http://unauthorized.com")
+	req.Header.Set(KeyRequestMethods, http.MethodDelete)
+	req.Header.Set(KeyRequestHeaders, strings.Join([]string{
+		"X-Test: value for x-test header",
+		"Unauthorized: hehe",
+	}, ","))
 	resrec := httptest.NewRecorder()
+
 	router.ServeHTTP(resrec, req)
 
-	// process result
-	fmt.Println(resrec.HeaderMap, resrec.Code)
-	body, err := ioutil.ReadAll(resrec.Body)
-	if err != nil {
-		t.Error(err)
+	if resrec.Code != http.StatusBadRequest {
+		t.Error("should not be authorized")
+		return
 	}
-	fmt.Println(string(body))
+
+	// todo: send normal request
+
+	// process result
+	// body, err := ioutil.ReadAll(resrec.Body)
+	// if err != nil {
+	// 	t.Error(err)
+	// }
+	// fmt.Println(string(body))
 }

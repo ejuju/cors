@@ -15,6 +15,7 @@ This CORS implementation simply responds to the browser with the right headers, 
 
 ## Roadmap
 
+- Allow dynamic policy `func(r *http.Request) ...` for policy fields
 - Access-Control-Request-Private-Network
 
 ## Notes
